@@ -1,15 +1,17 @@
 package com.redecommunity.factions;
 
 import com.redecommunity.api.spigot.CommunityPlugin;
+import lombok.Getter;
 
 /**
  * Created by @SrGutyerrez
  */
 public class Factions extends CommunityPlugin {
+    @Getter
     private static Factions instance;
 
-    public static Factions getInstance() {
-        return Factions.instance;
+    public Factions() {
+        Factions.instance = this;
     }
 
     @Override
