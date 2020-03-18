@@ -1,4 +1,4 @@
-package com.redecommunity.factions.entity.permission.enums;
+package com.redecommunity.factions.permission.enums;
 
 import com.redecommunity.api.spigot.inventory.item.CustomItem;
 import lombok.Getter;
@@ -77,7 +77,7 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.RED_MUSHROOM)
-            .name("§aRecrutar membros")
+                    .name("§aRecrutar membros")
     ),
     KICK(
             "expulsar membros",
@@ -91,7 +91,7 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.BROWN_MUSHROOM)
-            .name("§aExpulsar membros")
+                    .name("§aExpulsar membros")
     ),
     REDSTONE_USE(
             "utilizar redstone",
