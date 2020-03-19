@@ -1,10 +1,12 @@
-package com.redecommunity.factions.user;
+package com.redecommunity.factions.user.data;
 
 import com.google.common.collect.Lists;
 import com.redecommunity.api.spigot.user.data.SpigotUser;
 import com.redecommunity.common.shared.permissions.user.data.User;
 import com.redecommunity.factions.faction.data.Faction;
 import com.redecommunity.factions.faction.enums.Role;
+import com.redecommunity.factions.faction.manager.FactionManager;
+import com.redecommunity.factions.permission.data.Permission;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,6 +41,9 @@ public class FUser extends SpigotUser {
 
     private final List<Integer> invites = Lists.newArrayList();
 
+    @Getter
+    private final List<Permission> permissions = Lists.newArrayList();
+
     public FUser(User user) {
         super(user);
     }
@@ -47,15 +52,16 @@ public class FUser extends SpigotUser {
         List<Faction> invites = Lists.newArrayList();
 
         this.invites.forEach(factionId -> {
+            Faction faction = FactionManager.getFaction(factionId);
 
+            invites.add(faction);
         });
 
         return invites;
     }
 
-    // Tem que implementar
     public Faction getFaction() {
-        return null;
+        return FactionManager.getFaction(this.factionId);
     }
 
     public String getFactionName() {
@@ -78,7 +84,7 @@ public class FUser extends SpigotUser {
 
     public String getKDR() {
         int kills = this.getKills();
-        int deaths = this.getDeaths() == 0 ? this.getDeaths() : 1;
+        int deaths = this.getDeaths() == 0 ? 1 : this.getDeaths();
 
         DecimalFormat decimalFormat = new DecimalFormat("0.0");
 
@@ -107,5 +113,9 @@ public class FUser extends SpigotUser {
 
     public Boolean isOverriding() {
         return this.overriding;
+    }
+
+    public Boolean isLeader() {
+        return this.role == Role.LEADER;
     }
 }
