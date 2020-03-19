@@ -6,7 +6,7 @@ import com.redecommunity.factions.generator.data.Generator;
 import com.redecommunity.factions.history.data.History;
 import com.redecommunity.factions.land.data.Land;
 import com.redecommunity.factions.permission.data.Permission;
-import com.redecommunity.factions.user.FUser;
+import com.redecommunity.factions.user.data.FUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,4 +51,16 @@ public class Faction {
     private final List<History> history;
     @Getter
     private final ChatColor tagColor;
+
+    public FUser getLeader() {
+        return this.members
+                .stream()
+                .filter(FUser::isLeader)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Boolean isDefault() {
+        return this.defaultFaction;
+    }
 }
