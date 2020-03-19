@@ -1,6 +1,7 @@
 package com.redecommunity.factions.permission.enums;
 
 import com.redecommunity.api.spigot.inventory.item.CustomItem;
+import com.redecommunity.factions.faction.enums.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
@@ -11,7 +12,7 @@ import org.bukkit.Material;
 @RequiredArgsConstructor
 @Getter
 public enum PermissionType {
-    CONSTRUCT(
+    BUILD(
             "construir no terreno",
             new String[]{
                     "§7Permite o jogador colocar e quebrar",
@@ -22,9 +23,15 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.WOOD_PICKAXE)
-                    .name("§aConstruir no terreno")
+                    .name("§aConstruir no terreno"),
+            false,
+            true,
+            true,
+            false,
+            false,
+            false
     ),
-    CHEST_ACCESS(
+    OPEN_CONTAINERS(
             "acessar containers",
             new String[]{
                     "§7Permite o jogador abrir baús, fornalhas,",
@@ -36,7 +43,13 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.MINECART)
-                    .name("§aAcessar containers")
+                    .name("§aAcessar containers"),
+            false,
+            true,
+            true,
+            false,
+            false,
+            false
     ),
     CLAIM(
             "dominar terrenos",
@@ -50,7 +63,13 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.GRASS)
-                    .name("§aDominar terrenos")
+                    .name("§aDominar terrenos"),
+            false,
+            false,
+            true,
+            false,
+            false,
+            false
     ),
     UNCLAIM(
             "abandonar terrenos",
@@ -64,7 +83,13 @@ public enum PermissionType {
             },
             new CustomItem(Material.DIRT)
                     .data(1)
-                    .name("§aAbandonar terrenos")
+                    .name("§aAbandonar terrenos"),
+            false,
+            false,
+            true,
+            false,
+            false,
+            false
     ),
     INVITE(
             "recrutar membros",
@@ -77,7 +102,13 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.RED_MUSHROOM)
-                    .name("§aRecrutar membros")
+                    .name("§aRecrutar membros"),
+            false,
+            false,
+            true,
+            false,
+            false,
+            false
     ),
     KICK(
             "expulsar membros",
@@ -91,7 +122,13 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.BROWN_MUSHROOM)
-                    .name("§aExpulsar membros")
+                    .name("§aExpulsar membros"),
+            false,
+            false,
+            false,
+            true,
+            false,
+            true
     ),
     REDSTONE_USE(
             "utilizar redstone",
@@ -105,7 +142,13 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.MINECART)
-                    .name("§aUtilizar redstone")
+                    .name("§aUtilizar redstone"),
+            false,
+            false,
+            false,
+            true,
+            false,
+            true
     ),
     BEACON_ACCESS(
             "acessar sinalizadores",
@@ -118,9 +161,15 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.MINECART)
-                    .name("§aAcessar sinalizadores")
+                    .name("§aAcessar sinalizadores"),
+            true,
+            true,
+            true,
+            false,
+            false,
+            false
     ),
-    GENERATOR_ACCESS(
+    WITHDRAW_GENERATORS(
             "retirar geradores",
             new String[]{
                     "§7Permite que o jogador retire os geradores",
@@ -130,9 +179,16 @@ public enum PermissionType {
                     "",
                     "§7Clique para {state_parent} esta permissão."
             },
-            null
+            new CustomItem(Material.MOB_SPAWNER)
+                    .name("§aRetirar geradores"),
+            false,
+            false,
+            true,
+            false,
+            false,
+            false
     ),
-    HOME_ACCESS(
+    HOME_TELEPORT(
             "acessar a base da facção",
             new String[]{
                     "§7Permite que o jogador tenha acesso",
@@ -143,9 +199,15 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.MINECART)
-                    .name("§aAcessar a base da facção")
+                    .name("§aAcessar a base da facção"),
+            false,
+            true,
+            true,
+            false,
+            false,
+            false
     ),
-    TERRAIN_ACCESS(
+    INTERACT(
             "ir aos terrenos da facção",
             new String[]{
                     "§7Permite o jogador se teletransportar para homes",
@@ -157,7 +219,13 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.MINECART)
-                    .name("§aIr aos terrenos da facção")
+                    .name("§aIr aos terrenos da facção"),
+            true,
+            true,
+            true,
+            false,
+            false,
+            false
     ),
     TELEPORT_REQUEST_ACCEPT(
             "aceitar pedidos de tpa",
@@ -171,10 +239,46 @@ public enum PermissionType {
                     "§7Clique para {state_parent} esta permissão."
             },
             new CustomItem(Material.MINECART)
-                    .name("§aAceitar pedidos de tpa")
+                    .name("§aAceitar pedidos de tpa"),
+            false,
+            false,
+            false,
+            true,
+            false,
+            true
     );
 
     private final String name;
     private final String[] lore;
     private final CustomItem customItem;
+    private final Boolean recruit, member, officer, neutral, ally, enemy;
+
+    public Boolean getDefault(Role role) {
+        switch (role) {
+            case RECRUIT: {
+                return this.recruit;
+            }
+            case MEMBER: {
+                return this.member;
+            }
+            case OFFICER: {
+                return this.officer;
+            }
+            case LEADER: {
+                return true;
+            }
+            case ALLY: {
+                return this.ally;
+            }
+            case NEUTRAL: {
+                return this.neutral;
+            }
+            case ENEMY: {
+                return this.enemy;
+            }
+            default: {
+                return false;
+            }
+        }
+    }
 }
