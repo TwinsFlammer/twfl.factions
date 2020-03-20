@@ -73,7 +73,8 @@ public class FactionManager {
                 Lists.newArrayList(),
                 Maps.newHashMap(),
                 Lists.newArrayList(),
-                ChatColor.GRAY
+                ChatColor.GRAY,
+                0
         );
     }
 }
