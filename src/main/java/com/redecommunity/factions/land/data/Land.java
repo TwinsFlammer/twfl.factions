@@ -1,5 +1,6 @@
 package com.redecommunity.factions.land.data;
 
+import com.google.common.collect.Lists;
 import com.redecommunity.factions.Factions;
 import com.redecommunity.factions.faction.data.Faction;
 import com.redecommunity.factions.faction.manager.FactionManager;
@@ -72,6 +73,28 @@ public class Land {
                 .filter(land -> !land.isTemporary())
                 .map(Land::getFaction)
                 .collect(Collectors.toList());
+    }
+
+    public List<Land> getConnectedLands() {
+        List<Land> lands = Lists.newArrayList();
+
+        Integer[] values = { -1, 1 };
+
+        for (int x = 0; x < values.length; x++) {
+            Integer newX = this.x + values[x];
+            Integer newZ = this.z + values[x];
+
+            Land land1 = Factions.getLandFactory().getLand(this.worldName, newX, this.z);
+            Land land2 = Factions.getLandFactory().getLand(this.worldName, this.x, newZ);
+
+            if (land1 != null && land1.getFactionId().equals(this.factionId))
+                lands.add(land1);
+
+            if (land2 != null && land2.getFactionId().equals(this.factionId))
+                lands.add(land2);
+        }
+
+        return lands;
     }
 
     public Boolean isDefaultLand() {
