@@ -14,8 +14,8 @@ import com.redecommunity.factions.faction.manager.FactionManager;
 import com.redecommunity.factions.land.data.Land;
 import com.redecommunity.factions.permission.data.Permission;
 import com.redecommunity.factions.permission.enums.PermissionType;
+import com.redecommunity.factions.util.ChunkUtils;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by @SrGutyerrez
@@ -72,17 +73,6 @@ public class FUser extends SpigotUser {
             this.getPlayer().sendMessage(Helper.colorize(message));
     }
 
-    public void tryClaim(Faction faction, Chunk chunk) {
-        Land land = Factions.getLandFactory().getLand(chunk);
-
-        if (land == null) {
-            this.sendMessage("§cOcorreu um erro ao tentar comprar esta terra");
-            return;
-        }
-
-        // continuar
-    }
-
     public List<Faction> getInvites() {
         List<Faction> invites = Lists.newArrayList();
 
@@ -102,7 +92,6 @@ public class FUser extends SpigotUser {
     public CustomItem getSkull() {
         Skin skin = this.getSkin();
         Role role = this.getRole();
-
 
         return new CustomItem(Material.SKULL_ITEM)
                 .name(this.getHighestGroup().getFancyPrefix() + this.getDisplayName())
@@ -210,6 +199,51 @@ public class FUser extends SpigotUser {
     @Warning
     public void withdraw(Double value) {
         // TODO not implemented-yet
+    }
+
+    public Boolean tryClaim(Faction faction, Chunk chunk) {
+        Land land = Factions.getLandFactory().getLand(chunk);
+
+        if (faction.getPower() <= faction.getLands().size() + 1) {
+            this.sendMessage("§cSua facção não tem poder suficiente para dominar esta terra.");
+            return false;
+        }
+
+        if (land.getConnectedLands().stream().anyMatch(land1 -> land.isTemporary() && land1.getFactionId().equals(this.factionId))) {
+            this.sendMessage("§cVocê não pode dominar ao lado de terrenos temporários de sua facção.");
+            return false;
+        }
+
+        if (faction.getLands().stream().anyMatch(land1 -> land1.getWorldName().equals(land.getWorldName()))) {
+            List<Land> around = land.getConnectedLands()
+                    .stream()
+                    .filter(land1 -> land1.getFactionId().equals(faction.getId()))
+                    .collect(Collectors.toList());
+
+            if (around.isEmpty()) {
+                this.sendMessage("§cVocê só pode dominar terras conectadas às suas.");
+                return false;
+            }
+        }
+
+        List<Faction> factions = land.getNearbyFactions();
+
+        if (factions.size() != 0) {
+            String factionsName = factions.stream()
+                    .map(Faction::getName)
+                    .distinct()
+                    .collect(Collectors.joining(", "));
+
+            this.sendMessage("§cAs seguintes facções estão próximas: " + factionsName + ". Portanto, não foi possível dominar esta terra.");
+            return false;
+        }
+
+        if (!this.hasPermission(PermissionType.CLAIM) && !this.overriding) {
+            this.sendMessage("§cVocê não tem permissões para dominar terras.");
+            return false;
+        }
+
+        return true;
     }
 
     public Boolean isMapAutoUpdating() {
