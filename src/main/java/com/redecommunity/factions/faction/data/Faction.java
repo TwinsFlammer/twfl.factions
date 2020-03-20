@@ -51,6 +51,8 @@ public class Faction {
     private final List<History> history;
     @Getter
     private final ChatColor tagColor;
+    @Getter
+    private final Integer warWins;
 
     public FUser getLeader() {
         return this.members
@@ -62,5 +64,9 @@ public class Faction {
 
     public Boolean isDefault() {
         return this.defaultFaction;
+    }
+
+    public Boolean isSimilar(Faction faction) {
+        return this.id.equals(faction.getId());
     }
 }
