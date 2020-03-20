@@ -15,6 +15,7 @@ import org.bukkit.Location;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by @SrGutyerrez
@@ -60,6 +61,26 @@ public class Faction {
                 .filter(FUser::isLeader)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Double getPower() {
+        AtomicReference<Double> power = new AtomicReference<>(0.0);
+
+        this.members.forEach(fUser -> {
+            power.updateAndGet(v -> v + fUser.getPower());
+        });
+
+        return power.get();
+    }
+
+    public Double getPowerMax() {
+        AtomicReference<Double> powerMax = new AtomicReference<>(0.0);
+
+        this.members.forEach(fUser -> {
+            powerMax.updateAndGet(v -> v + fUser.getPowerMax());
+        });
+
+        return powerMax.get();
     }
 
     public Boolean isDefault() {
