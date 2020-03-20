@@ -11,4 +11,11 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class Permission {
     private final HashMap<PermissionType, Boolean> permissions;
+
+    public Boolean has(PermissionType permissionType) {
+        return this.permissions.getOrDefault(
+                permissionType,
+                false
+        );
+    }
 }
