@@ -1,5 +1,6 @@
 package com.redecommunity.factions.faction.enums;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -7,6 +8,11 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public enum Role {
+    NONE(
+            "nenhum",
+            "Nenhum",
+            ""
+    ),
     RECRUIT(
             "recruta",
             "Recruta",
@@ -28,13 +34,13 @@ public enum Role {
             "#"
     ),
     NEUTRAL(
-            "aliada",
-            "Aliada",
+            "neutra",
+            "Neutra",
             null
     ),
     ENEMY(
-            "aliada",
-            "Aliada",
+            "inimiga",
+            "Inimiga",
             null
     ),
     ALLY(
@@ -43,5 +49,6 @@ public enum Role {
             null
     );
 
+    @Getter
     private final String name, displayName, prefix;
 }
