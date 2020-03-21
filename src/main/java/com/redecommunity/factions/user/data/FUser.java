@@ -102,8 +102,8 @@ public class FUser extends SpigotUser {
                         "§fCoins: §7" + this.getMoneyFormatted(),
                         "§fCargo: §7" + role.getPrefix() + role.getDisplayName(),
                         "§fKDR: §7" + this.getKDRFormatted(),
-                        "§fAbates: §7" + this.getKillsFormatted(),
-                        "§fMortes: §7" + this.getDeathsFormatted(),
+                        "§fAbates: §7" + this.getKills() + " " + this.getKillsFormatted(),
+                        "§fMortes: §7" + this.getDeaths() + " " + this.getDeathsFormatted(),
                         "§fGuerras ganhas: §7" + this.warWins,
                         "§fStatus §7" + (this.isOnline() ? "§aOnline" : "§cOffline"),
                         "§fÚltimo login: §7" + this.getLastLoginFormatted()
@@ -122,20 +122,15 @@ public class FUser extends SpigotUser {
     public String getFullFactionName() {
         Faction faction = this.getFaction();
 
-        return faction == null ? null : String.format(
-                "[%s] %s",
-                faction.getTag(),
-                faction.getName()
-        );
+        return faction == null ? "" : faction.getFullName();
     }
 
     public String getKDRFormatted() {
-        int kills = this.getKills();
-        int deaths = this.getDeaths() == 0 ? 1 : this.getDeaths();
+        double kdr = this.getKDR();
 
         DecimalFormat decimalFormat = new DecimalFormat("0.0");
 
-        return decimalFormat.format(kills / deaths);
+        return decimalFormat.format(kdr);
     }
 
     public String getKillsFormatted() {
