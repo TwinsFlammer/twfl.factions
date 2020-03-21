@@ -100,4 +100,8 @@ public class Land {
     public Boolean isDefaultLand() {
         return this.factionId.equals(Factions.ID_NONE) || this.factionId.equals(Factions.ID_SAFEZONE) || this.factionId.equals(Factions.ID_WARZONE);
     }
+
+    public Boolean isUnderAttack() {
+        return this.attackTime >= System.currentTimeMillis();
+    }
 }
