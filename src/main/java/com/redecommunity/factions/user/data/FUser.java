@@ -1,7 +1,6 @@
 package com.redecommunity.factions.user.data;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.redecommunity.api.spigot.inventory.item.CustomItem;
 import com.redecommunity.api.spigot.user.data.SpigotUser;
 import com.redecommunity.common.shared.permissions.user.data.User;
@@ -12,9 +11,9 @@ import com.redecommunity.factions.faction.data.Faction;
 import com.redecommunity.factions.faction.enums.Role;
 import com.redecommunity.factions.faction.manager.FactionManager;
 import com.redecommunity.factions.land.data.Land;
+import com.redecommunity.factions.permission.dao.PermissionDao;
 import com.redecommunity.factions.permission.data.Permission;
 import com.redecommunity.factions.permission.enums.PermissionType;
-import com.redecommunity.factions.util.ChunkUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Chunk;
@@ -59,13 +58,16 @@ public class FUser extends SpigotUser {
     private final Permission permission;
 
     @Getter
+    @Setter
     private Integer warWins;
 
     public FUser(User user) {
         super(user);
 
+        PermissionDao permissionDao = new PermissionDao();
+
         // create this value
-        this.permission = new Permission(Maps.newHashMap());
+        this.permission = permissionDao.findOne("user_id", this.getId());
     }
 
     public void sendMessage(String message) {
