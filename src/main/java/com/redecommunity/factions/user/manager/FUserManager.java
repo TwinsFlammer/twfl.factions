@@ -2,6 +2,7 @@ package com.redecommunity.factions.user.manager;
 
 import com.redecommunity.common.shared.permissions.user.data.User;
 import com.redecommunity.common.shared.permissions.user.manager.UserManager;
+import com.redecommunity.factions.Factions;
 import com.redecommunity.factions.faction.manager.FactionManager;
 import com.redecommunity.factions.user.data.FUser;
 
@@ -24,7 +25,9 @@ public class FUserManager {
                         .filter(fUser -> fUser.getId().equals(id))
                         .findFirst()
                 )
-                .orElse(null);
+                .orElse(
+                        Factions.getFUserFactory().getUser(id)
+                );
     }
 
     public static FUser getFUser(String name) {
