@@ -25,7 +25,7 @@ public class FUserFactory<U extends FUser> extends AbstractUserFactory<U> {
     @Override
     public U getUser(String username) {
         return this.users.stream()
-                .filter(u -> u.getId().equals(username))
+                .filter(u -> u.getName().equalsIgnoreCase(username))
                 .findFirst()
                 .orElseGet(() -> (U) SpigotAPI.getSpigotUserFactory().getUser(username));
     }
@@ -33,7 +33,7 @@ public class FUserFactory<U extends FUser> extends AbstractUserFactory<U> {
     @Override
     public U getUser(UUID uniqueId) {
         return this.users.stream()
-                .filter(u -> u.getId().equals(uniqueId))
+                .filter(u -> u.getUniqueId().equals(uniqueId))
                 .findFirst()
                 .orElseGet(() -> (U) SpigotAPI.getSpigotUserFactory().getUser(uniqueId));
     }
