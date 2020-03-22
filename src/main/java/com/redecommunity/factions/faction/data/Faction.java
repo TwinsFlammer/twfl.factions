@@ -73,7 +73,13 @@ public class Faction {
     }
 
     public void disband() {
-        // fazer para quando deletar a facção remover membos, deletar a facção do mysql
+        this.members.forEach(fUser -> {
+            fUser.setFactionId(1);
+            fUser.setRole(Role.RECRUIT);
+
+
+        });
+        // fazer para quando deletar a facção remover membros, deletar a facção do mysql
         // trocar a role do membro etc etc etc etc
     }
 
