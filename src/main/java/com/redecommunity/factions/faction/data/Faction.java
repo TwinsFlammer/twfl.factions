@@ -1,6 +1,5 @@
 package com.redecommunity.factions.faction.data;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redecommunity.api.spigot.inventory.item.CustomItem;
 import com.redecommunity.factions.battle.data.Battle;
@@ -424,5 +423,9 @@ public class Faction {
         );
 
         return permission.has(permissionType);
+    }
+
+    public Boolean hasAnyPermission() {
+        return !this.permissions.isEmpty();
     }
 }
