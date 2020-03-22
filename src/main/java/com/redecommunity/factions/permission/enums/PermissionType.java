@@ -281,4 +281,8 @@ public enum PermissionType {
             }
         }
     }
+
+    public String getColumnName() {
+        return this.name().toLowerCase();
+    }
 }
