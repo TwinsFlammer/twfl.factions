@@ -2,6 +2,7 @@ package com.redecommunity.factions.permission.dao;
 
 import com.google.common.collect.Maps;
 import com.redecommunity.common.shared.databases.mysql.dao.Table;
+import com.redecommunity.factions.faction.enums.Relation;
 import com.redecommunity.factions.permission.data.Permission;
 import com.redecommunity.factions.permission.enums.PermissionType;
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Created by @SrGutyerrez
  */
-public class PermissionDao extends Table {
+public class PermissionDAO extends Table {
     @Override
     public void createTable() {
         String permissionsColumns = Arrays.stream(PermissionType.values())
@@ -31,6 +32,7 @@ public class PermissionDao extends Table {
                                 "`id` INTEGER NO NULL PRIMARY KEY AUTO_INCREMENT," +
                                 "`user_id` INTEGER," +
                                 "`faction_id` INTEGER," +
+                                "`relation` VARCHAR(255)," +
                                 "%s" +
                                 ");",
                         this.getTableName(),
@@ -127,7 +129,7 @@ public class PermissionDao extends Table {
         }
     }
 
-    public <K, V extends Integer, T> T findOne(K key, V value) {
+    public <K extends String, V extends Integer, T> T findOne(K key, V value) {
         String query = String.format(
                 "SELECT * FROM %s WHERE `%s`=%d;",
                 this.getTableName(),
@@ -140,8 +142,25 @@ public class PermissionDao extends Table {
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 ResultSet resultSet = preparedStatement.executeQuery();
         ) {
-            if (resultSet.next())
-                return (T) Permission.toPermission(resultSet);
+            if (key.equalsIgnoreCase("faction_id")) {
+                HashMap<Relation, Permission> permissionHashMap = Maps.newHashMap();
+
+                while (resultSet.next()) {
+                    Permission permission = Permission.toPermission(resultSet);
+
+                    Relation relation = Relation.valueOf(resultSet.getString("relation"));
+
+                    permissionHashMap.put(
+                            relation,
+                            permission
+                    );
+                }
+
+                return (T) permissionHashMap;
+            } else {
+                if (resultSet.next())
+                    return (T) Permission.toPermission(resultSet);
+            }
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
