@@ -4,12 +4,15 @@ import com.google.common.collect.Maps;
 import com.redecommunity.api.spigot.inventory.item.CustomItem;
 import com.redecommunity.factions.battle.data.Battle;
 import com.redecommunity.factions.faction.enums.Relation;
+import com.redecommunity.factions.faction.enums.ResignReason;
 import com.redecommunity.factions.faction.enums.Role;
 import com.redecommunity.factions.generator.data.Generator;
 import com.redecommunity.factions.history.data.History;
+import com.redecommunity.factions.land.dao.LandDAO;
 import com.redecommunity.factions.land.data.Land;
 import com.redecommunity.factions.permission.data.Permission;
 import com.redecommunity.factions.permission.enums.PermissionType;
+import com.redecommunity.factions.user.dao.FUserDAO;
 import com.redecommunity.factions.user.data.FUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -73,14 +76,29 @@ public class Faction {
     }
 
     public void disband() {
-        this.members.forEach(fUser -> {
-            fUser.setFactionId(1);
-            fUser.setRole(Role.RECRUIT);
+        FUserDAO fUserDAO = new FUserDAO();
 
+        HashMap<String, Object> keys = Maps.newHashMap();
 
-        });
+        keys.put("faction_id", 1);
+        keys.put("role", Role.RECRUIT.toString());
+
+        fUserDAO.update(
+                keys,
+                "faction_id",
+                this.id
+        );
+
+        LandDAO landDAO = new LandDAO();
+
+        landDAO.delete(
+                "faction_id",
+                this.id
+        );
+
+        this.members.forEach(fUser -> fUser.resign(ResignReason.DISBAND));
         // fazer para quando deletar a facção remover membros, deletar a facção do mysql
-        // trocar a role do membro etc etc etc etc
+        // trocar a role do membro, deletar as relações, permissões, histórico, geradores e batalhas
     }
 
     public FUser getLeader() {
