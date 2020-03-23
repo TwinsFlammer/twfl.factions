@@ -12,7 +12,7 @@ import java.sql.SQLException;
 /**
  * Created by @SrGutyerrez
  */
-public class FactionDao<F extends Faction> extends Table {
+public class FactionDAO<F extends Faction> extends Table {
     @Override
     public void createTable() {
         this.execute(
