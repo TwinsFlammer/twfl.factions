@@ -19,7 +19,13 @@ public class FUserFactory<U extends FUser> extends AbstractUserFactory<U> {
         return this.users.stream()
                 .filter(u -> u.getId().equals(id))
                 .findFirst()
-                .orElseGet(() -> (U) SpigotAPI.getSpigotUserFactory().getUser(id));
+                .orElseGet(() -> {
+                    U user = (U) SpigotAPI.getSpigotUserFactory().getUser(id);
+
+                    this.users.add(user);
+
+                    return user;
+                });
     }
 
     @Override
@@ -27,7 +33,13 @@ public class FUserFactory<U extends FUser> extends AbstractUserFactory<U> {
         return this.users.stream()
                 .filter(u -> u.getName().equalsIgnoreCase(username))
                 .findFirst()
-                .orElseGet(() -> (U) SpigotAPI.getSpigotUserFactory().getUser(username));
+                .orElseGet(() -> {
+                    U user = (U) SpigotAPI.getSpigotUserFactory().getUser(username);
+
+                    this.users.add(user);
+
+                    return user;
+                });
     }
 
     @Override
@@ -35,6 +47,12 @@ public class FUserFactory<U extends FUser> extends AbstractUserFactory<U> {
         return this.users.stream()
                 .filter(u -> u.getUniqueId().equals(uniqueId))
                 .findFirst()
-                .orElseGet(() -> (U) SpigotAPI.getSpigotUserFactory().getUser(uniqueId));
+                .orElseGet(() -> {
+                    U user = (U) SpigotAPI.getSpigotUserFactory().getUser(uniqueId);
+
+                    this.users.add(user);
+
+                    return user;
+                });
     }
 }
