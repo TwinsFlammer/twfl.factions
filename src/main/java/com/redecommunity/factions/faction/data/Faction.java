@@ -6,6 +6,7 @@ import com.redecommunity.factions.battle.data.Battle;
 import com.redecommunity.factions.faction.enums.Relation;
 import com.redecommunity.factions.faction.enums.ResignReason;
 import com.redecommunity.factions.faction.enums.Role;
+import com.redecommunity.factions.faction.manager.FactionManager;
 import com.redecommunity.factions.generator.data.Generator;
 import com.redecommunity.factions.history.data.History;
 import com.redecommunity.factions.land.dao.LandDAO;
@@ -50,7 +51,7 @@ public class Faction {
     @Getter
     private final List<Land> lands, protectedLands;
     @Getter
-    private final HashMap<Faction, Relation> relations;
+    private final HashMap<Integer, Relation> relationsId;
 
     @Getter
     private Location homeLocation;
@@ -110,10 +111,10 @@ public class Faction {
     }
 
     public Relation getRelation(Faction faction) {
-        return this.relations.keySet()
+        return this.relationsId.keySet()
                 .stream()
-                .filter(faction1 -> faction1.getId().equals(faction.getId()))
-                .map(this.relations::get)
+                .filter(faction1 -> faction1.equals(faction.getId()))
+                .map(this.relationsId::get)
                 .findFirst()
                 .orElse(
                         Relation.NEUTRAL
@@ -186,24 +187,46 @@ public class Faction {
                 .collect(Collectors.toList());
     }
 
-    public List<Faction> getAlliesInvites() {
-        return this.relations.keySet()
+    public List<Faction> getRelations() {
+        return this.relationsId.keySet()
                 .stream()
-                .filter(faction -> faction.isInvitedAlly(this))
+                .map(FactionManager::getFaction)
+                .collect(Collectors.toList());
+    }
+
+    public List<Faction> getAlliesInvites() {
+        return this.relationsId.keySet()
+                .stream()
+                .filter(factionId -> {
+                    Faction faction = FactionManager.getFaction(factionId);
+
+                    return faction.isInvitedAlly(this);
+                })
+                .map(FactionManager::getFaction)
                 .collect(Collectors.toList());
     }
 
     public List<Faction> getAllies() {
-        return this.relations.keySet()
+        return this.relationsId.keySet()
                 .stream()
-                .filter(this::isAlly)
+                .filter(factionId -> {
+                    Faction faction = FactionManager.getFaction(factionId);
+
+                    return this.isAlly(faction);
+                })
+                .map(FactionManager::getFaction)
                 .collect(Collectors.toList());
     }
 
     public List<Faction> getEnemies() {
-        return this.relations.keySet()
+        return this.relationsId.keySet()
                 .stream()
-                .filter(this::isEnemy)
+                .filter(factionId -> {
+                    Faction faction = FactionManager.getFaction(factionId);
+
+                    return this.isEnemy(faction);
+                })
+                .map(FactionManager::getFaction)
                 .collect(Collectors.toList());
     }
 
@@ -411,23 +434,23 @@ public class Faction {
     }
 
     public Boolean isInvited(Relation relation, Faction faction) {
-        return this.relations.containsKey(faction) && faction.getRelations().containsKey(this)
-                && !this.relations.get(faction).equals(relation) || !faction.getRelations().get(this).equals(relation);
+        return this.relationsId.containsKey(faction.getId()) && faction.getRelationsId().containsKey(this.id)
+                && !this.relationsId.get(faction.getId()).equals(relation) || !faction.getRelationsId().get(this.id).equals(relation);
     }
 
     public Boolean isAlly(Faction faction) {
-        return this.relations.containsKey(faction) && faction.getRelations().containsKey(this)
-                && this.relations.get(faction).equals(Relation.ALLY) && faction.getRelations().get(this).equals(Relation.ALLY);
+        return this.relationsId.containsKey(faction.getId()) && faction.getRelationsId().containsKey(this.id)
+                && this.relationsId.get(faction.getId()).equals(Relation.ALLY) && faction.getRelationsId().get(this.id).equals(Relation.ALLY);
     }
 
     public Boolean isEnemy(Faction faction) {
-        return this.relations.containsKey(faction) && this.relations.get(faction).equals(Relation.ENEMY);
+        return this.relationsId.containsKey(faction.getId()) && this.relationsId.get(faction.getId()).equals(Relation.ENEMY);
     }
 
 
     public Boolean isInvitedAlly(Faction faction) {
-        return this.relations.containsKey(faction) && this.relations.get(faction).equals(Relation.ALLY)
-                && !faction.getRelations().containsKey(this) || !faction.getRelations().get(faction).equals(Relation.ALLY);
+        return this.relationsId.containsKey(faction.getId()) && this.relationsId.get(faction.getId()).equals(Relation.ALLY)
+                && !faction.getRelationsId().containsKey(this.id) || !faction.getRelationsId().get(faction.getId()).equals(Relation.ALLY);
     }
 
     public Boolean isInvited(FUser fUser) {
