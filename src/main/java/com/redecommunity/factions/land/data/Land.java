@@ -47,6 +47,10 @@ public class Land {
         return this.temporary;
     }
 
+    public Boolean isProtected() {
+        return this.duration != -1L;
+    }
+
     public Boolean isSimilar(Chunk chunk) {
         World world = chunk.getWorld();
 
