@@ -1,13 +1,20 @@
 package com.redecommunity.factions.faction.dao;
 
+import com.google.common.collect.Sets;
 import com.redecommunity.common.shared.databases.mysql.dao.Table;
 import com.redecommunity.factions.faction.data.Faction;
 import com.redecommunity.factions.faction.manager.FactionManager;
+import com.redecommunity.factions.land.dao.LandDAO;
+import com.redecommunity.factions.land.data.Land;
+import com.redecommunity.factions.user.dao.FUserDAO;
+import com.redecommunity.factions.user.data.FUser;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by @SrGutyerrez
@@ -21,7 +28,8 @@ public class FactionDAO<F extends Faction> extends Table {
                                 "(" +
                                 "`id` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT," +
                                 "`tag` VARCHAR(20) NOT NULL," +
-                                "`name` VARCHAR(3) NOT NULL" +
+                                "`name` VARCHAR(3) NOT NULL," +
+                                "`war_wins` INTEGER NOT NULL" +
                                 ");",
                         this.getTableName()
                 )
@@ -44,13 +52,16 @@ public class FactionDAO<F extends Faction> extends Table {
                         "(" +
                         "`tag`," +
                         "`name`," +
+                        "`war_wins`" +
                         ")" +
                         " VALUES " +
                         "'%s'," +
-                        "'%s';",
+                        "'%s'," +
+                        "%d;",
                 this.getTableName(),
                 faction.getTag(),
-                faction.getName()
+                faction.getName(),
+                faction.getWarWins()
         );
 
         try (
@@ -74,5 +85,57 @@ public class FactionDAO<F extends Faction> extends Table {
         }
 
         return null;
+    }
+
+    @Override
+    public Set<F> findAll() {
+        String query = String.format(
+                "SELECT * FROM %s;",
+                this.getTableName()
+        );
+
+        Set<F> factions = Sets.newConcurrentHashSet();
+
+        try (
+                Connection connection = this.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery();
+        ) {
+            while (resultSet.next()) {
+                Faction faction = FactionManager.toFaction(resultSet);
+
+                FUserDAO fUserDAO = new FUserDAO();
+
+                faction.getMembers().addAll(
+                        fUserDAO.findAll(
+                                "faction_id",
+                                faction.getId()
+                        )
+                );
+
+                LandDAO landDAO = new LandDAO();
+
+                Set<Land> lands = landDAO.findAll(
+                        "faction_id",
+                        faction.getId()
+                );
+
+                faction.getLands().addAll(
+                        lands.stream()
+                                .filter(land -> !land.isProtected())
+                                .collect(Collectors.toSet())
+                );
+                faction.getProtectedLands().addAll(
+                        lands.stream()
+                                .filter(Land::isProtected)
+                                .collect(Collectors.toSet())
+                );
+
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return factions;
     }
 }
