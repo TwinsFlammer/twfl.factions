@@ -8,6 +8,8 @@ import com.redecommunity.factions.faction.enums.Role;
 import com.redecommunity.factions.user.data.FUser;
 import org.bukkit.ChatColor;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,7 +65,7 @@ public class FactionManager {
                 id,
                 tag,
                 name,
-                Lists.newArrayList(leader),
+                leader == null ? Lists.newArrayList() : Lists.newArrayList(leader),
                 Lists.newArrayList(),
                 Lists.newArrayList(),
                 Maps.newHashMap(),
@@ -75,6 +77,16 @@ public class FactionManager {
                 Lists.newArrayList(),
                 ChatColor.GRAY,
                 0
+        );
+    }
+
+    public static Faction toFaction(ResultSet resultSet) throws SQLException  {
+        return FactionManager.createNewFaction(
+                resultSet.getInt("id"),
+                resultSet.getString("tag"),
+                resultSet.getString("name"),
+                null,
+                resultSet.getBoolean("default_faction")
         );
     }
 }
