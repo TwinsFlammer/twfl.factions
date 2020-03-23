@@ -1,10 +1,8 @@
 package com.redecommunity.factions.user.dao;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.redecommunity.api.spigot.SpigotAPI;
 import com.redecommunity.common.shared.databases.mysql.dao.Table;
-import com.redecommunity.common.shared.permissions.user.data.User;
-import com.redecommunity.common.shared.permissions.user.manager.UserManager;
-import com.redecommunity.factions.faction.enums.Role;
 import com.redecommunity.factions.user.data.FUser;
 import com.redecommunity.factions.user.manager.FUserManager;
 
@@ -13,11 +11,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by @SrGutyerrez
  */
-public class FUserDAO<T extends FUser> extends Table {
+public class FUserDAO<U extends FUser> extends Table {
     @Override
     public void createTable() {
         this.execute(
@@ -26,6 +25,7 @@ public class FUserDAO<T extends FUser> extends Table {
                                 "(" +
                                 "`id` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT," +
                                 "`user_id` INTEGER NOT NULL," +
+                                "`faction_id` INTEGER," +
                                 "`last_login` LONG," +
                                 "`role` VARCHAR(255) NOT NULL," +
                                 "`power` DOUBLE NOT NULL," +
@@ -57,11 +57,12 @@ public class FUserDAO<T extends FUser> extends Table {
         return "server_faction_user";
     }
 
-    public void insert(T fUser) {
+    public void insert(U fUser) {
         String query = String.format(
                 "INSERT INTO %s " +
                         "(" +
                         "`user_id`," +
+                        "`faction_id`," +
                         "`last_login`," +
                         "`role`," +
                         "`power`," +
@@ -99,6 +100,7 @@ public class FUserDAO<T extends FUser> extends Table {
                         ");",
                 this.getTableName(),
                 fUser.getId(),
+                fUser.getFactionId(),
                 fUser.getLastLogin(),
                 fUser.getRole().toString(),
                 fUser.getPower(),
@@ -153,6 +155,35 @@ public class FUserDAO<T extends FUser> extends Table {
         }
     }
 
+    public <K, V> Set<U> findAll(K key, V value) {
+        String query = String.format(
+                "SELECT * FROM %s WHERE `%s`=%d",
+                this.getTableName(),
+                key,
+                value
+        );
+
+        Set<U> users = Sets.newConcurrentHashSet();
+
+        try (
+                Connection connection = this.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery();
+        ) {
+            while (resultSet.next()) {
+                FUser fUser = (FUser) SpigotAPI.getSpigotUserFactory().getUser(
+                        resultSet.getInt("user_id")
+                );
+
+                users.add((U) fUser);
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return users;
+    }
+
     public <K, V extends Integer> Object[] findOne(K key, V value) {
         String query = String.format(
                 "SELECT * FROM %s WHERE `%s`=%d",
@@ -168,6 +199,7 @@ public class FUserDAO<T extends FUser> extends Table {
         ) {
             if (resultSet.next())
                 return new Object[] {
+                        resultSet.getInt("faction_id"),
                         resultSet.getLong("last_login"),
                         resultSet.getString("role"),
                         resultSet.getDouble("power"),
