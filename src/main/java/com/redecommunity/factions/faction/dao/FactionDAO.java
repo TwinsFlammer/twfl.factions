@@ -10,7 +10,6 @@ import com.redecommunity.factions.land.data.Land;
 import com.redecommunity.factions.permission.dao.PermissionDAO;
 import com.redecommunity.factions.permission.data.Permission;
 import com.redecommunity.factions.user.dao.FUserDAO;
-import com.redecommunity.factions.user.data.FUser;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -144,7 +143,14 @@ public class FactionDAO<F extends Faction> extends Table {
 
                 faction.getPermissions().putAll(permissionHashMap);
 
+                RelationDAO relationDAO = new RelationDAO();
 
+                HashMap<Integer, Relation> relationsId = relationDAO.findOne(
+                        "faction_id",
+                        faction.getId()
+                );
+
+                faction.getRelationsId().putAll(relationsId);
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
