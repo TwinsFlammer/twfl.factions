@@ -14,6 +14,7 @@ import com.redecommunity.factions.land.data.Land;
 import com.redecommunity.factions.permission.dao.PermissionDao;
 import com.redecommunity.factions.permission.data.Permission;
 import com.redecommunity.factions.permission.enums.PermissionType;
+import com.redecommunity.factions.user.dao.FUserDao;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Chunk;
@@ -30,27 +31,29 @@ import java.util.stream.Collectors;
  * Created by @SrGutyerrez
  */
 public class FUser extends SpigotUser {
+    private static final Double FACTION_USER_POWER_MAX = 5.0, FACTION_USER_POWER = 0.0;
+
     @Setter
-    private Integer factionId;
+    private Integer factionId = 1;
 
     @Getter
     @Setter
-    private Long lastLogin;
+    private Long lastLogin = -1L;
 
     @Getter
     @Setter
-    private Role role;
+    private Role role = Role.RECRUIT;
 
     @Getter
     @Setter
-    private Double power, powerMax;
+    private Double power = FUser.FACTION_USER_POWER, powerMax = FUser.FACTION_USER_POWER_MAX;
 
     @Setter
-    private Boolean mapAutoUpdating, flying, seeingChunks, overriding;
+    private Boolean mapAutoUpdating = false, flying = false, seeingChunks = false, overriding = false;
 
     @Getter
     @Setter
-    private Integer killsCivilian, killsNeutral, killsEnemy, deathsCivilian, deathsNeutral, deathsEnemy;
+    private Integer killsCivilian = 0, killsNeutral = 0, killsEnemy = 0, deathsCivilian = 0, deathsNeutral = 0, deathsEnemy = 0;
 
     private final List<Integer> invites = Lists.newArrayList();
 
@@ -59,15 +62,36 @@ public class FUser extends SpigotUser {
 
     @Getter
     @Setter
-    private Integer warWins;
+    private Integer warWins = 0;
 
     public FUser(User user) {
         super(user);
 
         PermissionDao permissionDao = new PermissionDao();
 
-        // create this value
         this.permission = permissionDao.findOne("user_id", this.getId());
+
+        FUserDao fUserDao = new FUserDao();
+
+        Object[] objects = fUserDao.findOne("id", this.getId());
+
+        if (objects != null) {
+            this.lastLogin = (Long) objects[0];
+            this.role = Role.valueOf((String) objects[1]);
+            this.power = (Double) objects[2];
+            this.powerMax = (Double) objects[3];
+            this.mapAutoUpdating = (Boolean) objects[4];
+            this.flying = (Boolean) objects[5];
+            this.seeingChunks = (Boolean) objects[6];
+            this.overriding = (Boolean) objects[7];
+            this.killsCivilian = (Integer) objects[8];
+            this.killsNeutral = (Integer) objects[9];
+            this.killsEnemy = (Integer) objects[10];
+            this.deathsCivilian = (Integer) objects[11];
+            this.deathsNeutral = (Integer) objects[12];
+            this.deathsEnemy = (Integer) objects[13];
+            this.warWins = (Integer) objects[14];
+        }
     }
 
     public void sendMessage(String message) {
