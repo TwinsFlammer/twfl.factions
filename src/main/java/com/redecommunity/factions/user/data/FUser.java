@@ -14,7 +14,7 @@ import com.redecommunity.factions.land.data.Land;
 import com.redecommunity.factions.permission.dao.PermissionDao;
 import com.redecommunity.factions.permission.data.Permission;
 import com.redecommunity.factions.permission.enums.PermissionType;
-import com.redecommunity.factions.user.dao.FUserDao;
+import com.redecommunity.factions.user.dao.FUserDAO;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Chunk;
@@ -71,7 +71,7 @@ public class FUser extends SpigotUser {
 
         this.permission = permissionDao.findOne("user_id", this.getId());
 
-        FUserDao fUserDao = new FUserDao();
+        FUserDAO fUserDao = new FUserDAO();
 
         Object[] objects = fUserDao.findOne("id", this.getId());
 
