@@ -1,11 +1,16 @@
 package com.redecommunity.factions.user.dao;
 
+import com.google.common.collect.Maps;
 import com.redecommunity.common.shared.databases.mysql.dao.Table;
+import com.redecommunity.common.shared.permissions.user.data.User;
+import com.redecommunity.common.shared.permissions.user.manager.UserManager;
+import com.redecommunity.factions.faction.enums.Role;
 import com.redecommunity.factions.user.data.FUser;
 import com.redecommunity.factions.user.manager.FUserManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -148,7 +153,40 @@ public class FUserDao<T extends FUser> extends Table {
         }
     }
 
-    public <K, V> T findOne(K key, V value) {
+    public <K, V extends Integer> Object[] findOne(K key, V value) {
+        String query = String.format(
+                "SELECT * FROM %s WHERE `%s`=%d",
+                this.getTableName(),
+                key,
+                value
+        );
+
+        try (
+                Connection connection = this.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery();
+        ) {
+            if (resultSet.next())
+                return new Object[] {
+                        resultSet.getLong("last_login"),
+                        resultSet.getString("role"),
+                        resultSet.getDouble("power"),
+                        resultSet.getDouble("power_max"),
+                        resultSet.getBoolean("map_auto_updating"),
+                        resultSet.getBoolean("flying"),
+                        resultSet.getBoolean("seeing_chunks"),
+                        resultSet.getBoolean("overriding"),
+                        resultSet.getInt("kills_civilian"),
+                        resultSet.getInt("kills_neutral"),
+                        resultSet.getInt("kills_enemy"),
+                        resultSet.getInt("deaths_civilian"),
+                        resultSet.getInt("deaths_neutral"),
+                        resultSet.getInt("deaths_enemy"),
+                        resultSet.getInt("war_wins")
+                };
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
 
         return null;
     }
