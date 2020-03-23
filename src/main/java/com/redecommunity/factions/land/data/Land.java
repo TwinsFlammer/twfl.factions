@@ -12,6 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -103,5 +105,19 @@ public class Land {
 
     public Boolean isUnderAttack() {
         return this.attackTime >= System.currentTimeMillis();
+    }
+
+    public static Land toLand(ResultSet resultSet) throws SQLException {
+        return new Land(
+                resultSet.getInt("id"),
+                resultSet.getInt("faction_id"),
+                resultSet.getString("world_name"),
+                resultSet.getInt("x"),
+                resultSet.getInt("z"),
+                resultSet.getLong("claimed_at"),
+                resultSet.getLong("duration"),
+                -1L,
+                resultSet.getBoolean("temporary")
+        );
     }
 }
