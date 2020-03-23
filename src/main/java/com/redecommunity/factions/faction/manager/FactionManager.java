@@ -2,7 +2,7 @@ package com.redecommunity.factions.faction.manager;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.redecommunity.factions.faction.dao.FactionDao;
+import com.redecommunity.factions.faction.dao.FactionDAO;
 import com.redecommunity.factions.faction.data.Faction;
 import com.redecommunity.factions.faction.enums.Role;
 import com.redecommunity.factions.user.data.FUser;
@@ -48,7 +48,7 @@ public class FactionManager {
                 defaultFaction
         );
 
-        FactionDao factionDao = new FactionDao();
+        FactionDAO factionDao = new FactionDAO();
 
         faction = factionDao.insert(faction);
 
