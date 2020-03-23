@@ -12,7 +12,7 @@ import com.redecommunity.factions.faction.enums.ResignReason;
 import com.redecommunity.factions.faction.enums.Role;
 import com.redecommunity.factions.faction.manager.FactionManager;
 import com.redecommunity.factions.land.data.Land;
-import com.redecommunity.factions.permission.dao.PermissionDao;
+import com.redecommunity.factions.permission.dao.PermissionDAO;
 import com.redecommunity.factions.permission.data.Permission;
 import com.redecommunity.factions.permission.enums.PermissionType;
 import com.redecommunity.factions.user.dao.FUserDAO;
@@ -69,7 +69,7 @@ public class FUser extends SpigotUser {
     public FUser(User user) {
         super(user);
 
-        PermissionDao permissionDao = new PermissionDao();
+        PermissionDAO permissionDao = new PermissionDAO();
 
         this.permission = permissionDao.findOne("user_id", this.getId());
 
