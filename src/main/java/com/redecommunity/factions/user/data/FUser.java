@@ -8,6 +8,7 @@ import com.redecommunity.common.shared.skin.data.Skin;
 import com.redecommunity.common.shared.util.Helper;
 import com.redecommunity.factions.Factions;
 import com.redecommunity.factions.faction.data.Faction;
+import com.redecommunity.factions.faction.enums.ResignReason;
 import com.redecommunity.factions.faction.enums.Role;
 import com.redecommunity.factions.faction.manager.FactionManager;
 import com.redecommunity.factions.land.data.Land;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 public class FUser extends SpigotUser {
     private static final Double FACTION_USER_POWER_MAX = 5.0, FACTION_USER_POWER = 0.0;
 
+    @Getter
     @Setter
     private Integer factionId = 1;
 
@@ -76,27 +78,39 @@ public class FUser extends SpigotUser {
         Object[] objects = fUserDao.findOne("id", this.getId());
 
         if (objects != null) {
-            this.lastLogin = (Long) objects[0];
-            this.role = Role.valueOf((String) objects[1]);
-            this.power = (Double) objects[2];
-            this.powerMax = (Double) objects[3];
-            this.mapAutoUpdating = (Boolean) objects[4];
-            this.flying = (Boolean) objects[5];
-            this.seeingChunks = (Boolean) objects[6];
-            this.overriding = (Boolean) objects[7];
-            this.killsCivilian = (Integer) objects[8];
-            this.killsNeutral = (Integer) objects[9];
-            this.killsEnemy = (Integer) objects[10];
-            this.deathsCivilian = (Integer) objects[11];
-            this.deathsNeutral = (Integer) objects[12];
-            this.deathsEnemy = (Integer) objects[13];
-            this.warWins = (Integer) objects[14];
+            this.factionId = (Integer) objects[0];
+            this.lastLogin = (Long) objects[1];
+            this.role = Role.valueOf((String) objects[2]);
+            this.power = (Double) objects[3];
+            this.powerMax = (Double) objects[4];
+            this.mapAutoUpdating = (Boolean) objects[5];
+            this.flying = (Boolean) objects[6];
+            this.seeingChunks = (Boolean) objects[7];
+            this.overriding = (Boolean) objects[8];
+            this.killsCivilian = (Integer) objects[9];
+            this.killsNeutral = (Integer) objects[10];
+            this.killsEnemy = (Integer) objects[11];
+            this.deathsCivilian = (Integer) objects[12];
+            this.deathsNeutral = (Integer) objects[13];
+            this.deathsEnemy = (Integer) objects[14];
+            this.warWins = (Integer) objects[15];
         }
     }
 
     public void sendMessage(String message) {
         if (this.isOnline())
             this.getPlayer().sendMessage(Helper.colorize(message));
+    }
+
+    private void resign() {
+        this.factionId = 1;
+        this.role = Role.RECRUIT;
+    }
+
+    public void resign(ResignReason resignReason) {
+        // chamar o evento e informar o motivo de ter saido
+
+        this.resign();
     }
 
     public List<Faction> getInvites() {
