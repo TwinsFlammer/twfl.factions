@@ -17,7 +17,7 @@ import java.util.HashMap;
 /**
  * Created by @SrGutyerrez
  */
-public class FUserDao<T extends FUser> extends Table {
+public class FUserDAO<T extends FUser> extends Table {
     @Override
     public void createTable() {
         this.execute(
