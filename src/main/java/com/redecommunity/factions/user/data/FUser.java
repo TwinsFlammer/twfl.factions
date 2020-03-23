@@ -105,6 +105,13 @@ public class FUser extends SpigotUser {
     private void resign() {
         this.factionId = 1;
         this.role = Role.RECRUIT;
+
+        PermissionDAO permissionDAO = new PermissionDAO();
+
+        permissionDAO.delete(
+                "user_id",
+                this.getId()
+        );
     }
 
     public void resign(ResignReason resignReason) {
