@@ -90,6 +90,25 @@ public class PermissionDAO extends Table {
         }
     }
 
+    @Override
+    public <K, V> void delete(K key, V value) {
+        String query = String.format(
+                "DELETE FROM %s WHERE `%s`=%d;",
+                this.getTableName(),
+                key,
+                value
+        );
+
+        try (
+                Connection connection = this.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ) {
+            preparedStatement.execute();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
     public <K, V, U, I extends Integer> void update(HashMap<K, V> keys, U key, I value) {
         String parameters = this.generateParameters(keys);
 
