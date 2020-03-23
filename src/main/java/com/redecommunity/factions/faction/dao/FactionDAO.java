@@ -3,9 +3,12 @@ package com.redecommunity.factions.faction.dao;
 import com.google.common.collect.Sets;
 import com.redecommunity.common.shared.databases.mysql.dao.Table;
 import com.redecommunity.factions.faction.data.Faction;
+import com.redecommunity.factions.faction.enums.Relation;
 import com.redecommunity.factions.faction.manager.FactionManager;
 import com.redecommunity.factions.land.dao.LandDAO;
 import com.redecommunity.factions.land.data.Land;
+import com.redecommunity.factions.permission.dao.PermissionDAO;
+import com.redecommunity.factions.permission.data.Permission;
 import com.redecommunity.factions.user.dao.FUserDAO;
 import com.redecommunity.factions.user.data.FUser;
 
@@ -13,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -130,6 +134,16 @@ public class FactionDAO<F extends Faction> extends Table {
                                 .filter(Land::isProtected)
                                 .collect(Collectors.toSet())
                 );
+
+                PermissionDAO permissionDAO = new PermissionDAO();
+
+                HashMap<Relation, Permission> permissionHashMap = permissionDAO.findOne(
+                        "faction_id",
+                        faction.getId()
+                );
+
+                faction.getPermissions().putAll(permissionHashMap);
+
 
             }
         } catch (SQLException exception) {
