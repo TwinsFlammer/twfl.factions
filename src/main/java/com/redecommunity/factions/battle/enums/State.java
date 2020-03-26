@@ -3,7 +3,7 @@ package com.redecommunity.factions.battle.enums;
 /**
  * Created by @SrGutyerrez
  */
-public enum BattleState {
+public enum State {
     WAITING_RESPONSE,
     STARTING,
     STARTED,
