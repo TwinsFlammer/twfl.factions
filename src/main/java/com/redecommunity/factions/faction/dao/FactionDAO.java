@@ -2,6 +2,8 @@ package com.redecommunity.factions.faction.dao;
 
 import com.google.common.collect.Sets;
 import com.redecommunity.common.shared.databases.mysql.dao.Table;
+import com.redecommunity.factions.battle.dao.BattleDAO;
+import com.redecommunity.factions.battle.data.Battle;
 import com.redecommunity.factions.faction.data.Faction;
 import com.redecommunity.factions.faction.enums.Relation;
 import com.redecommunity.factions.faction.manager.FactionManager;
@@ -151,6 +153,17 @@ public class FactionDAO<F extends Faction> extends Table {
                 );
 
                 faction.getRelationsId().putAll(relationsId);
+
+                BattleDAO battleDAO = new BattleDAO();
+
+                Set<Battle> battles = battleDAO.findAll(
+                        "challenger_id",
+                        faction.getId(),
+                        "challenged_id",
+                        faction.getId()
+                );
+
+                faction.getBattles().addAll(battles);
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
