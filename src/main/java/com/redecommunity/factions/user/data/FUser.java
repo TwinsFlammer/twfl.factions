@@ -1,6 +1,7 @@
 package com.redecommunity.factions.user.data;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.redecommunity.api.spigot.inventory.item.CustomItem;
 import com.redecommunity.api.spigot.user.data.SpigotUser;
 import com.redecommunity.common.shared.permissions.user.data.User;
@@ -25,6 +26,7 @@ import org.bukkit.Warning;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -105,6 +107,18 @@ public class FUser extends SpigotUser {
     private void resign() {
         this.factionId = 1;
         this.role = Role.RECRUIT;
+
+        FUserDAO fUserDAO = new FUserDAO();
+
+        HashMap<String, Object> keys = Maps.newHashMap();
+
+        keys.put("faction_id", 1);
+
+        fUserDAO.update(
+                keys,
+                "user_id",
+                this.getId()
+        );
 
         PermissionDAO permissionDAO = new PermissionDAO();
 
