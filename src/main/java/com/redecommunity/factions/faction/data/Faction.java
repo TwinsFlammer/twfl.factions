@@ -3,11 +3,11 @@ package com.redecommunity.factions.faction.data;
 import com.google.common.collect.Maps;
 import com.redecommunity.api.spigot.inventory.item.CustomItem;
 import com.redecommunity.factions.battle.data.Battle;
+import com.redecommunity.factions.faction.dao.FactionDAO;
 import com.redecommunity.factions.faction.enums.Relation;
 import com.redecommunity.factions.faction.enums.ResignReason;
 import com.redecommunity.factions.faction.enums.Role;
 import com.redecommunity.factions.faction.manager.FactionManager;
-import com.redecommunity.factions.generator.data.Generator;
 import com.redecommunity.factions.history.data.History;
 import com.redecommunity.factions.land.dao.LandDAO;
 import com.redecommunity.factions.land.data.Land;
@@ -23,6 +23,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -62,7 +63,7 @@ public class Faction {
     private Boolean defaultFaction;
 
     @Getter
-    private final List<Generator> generators;
+    private final HashMap<EntityType, ItemStack> generators;
     @Getter
     private final HashMap<Relation, Permission> permissions;
     @Getter
@@ -100,6 +101,12 @@ public class Faction {
         this.members.forEach(fUser -> fUser.resign(ResignReason.DISBAND));
         // fazer para quando deletar a facção remover membros, deletar a facção do mysql
         // trocar a role do membro, deletar as relações, permissões, histórico, geradores e batalhas
+    }
+
+    public void kick(FUser fUser) {
+        this.members.removeIf(fUser1 -> fUser1.getId().equals(fUser.getId()));
+
+        fUser.resign(ResignReason.KICK);
     }
 
     public FUser getLeader() {
