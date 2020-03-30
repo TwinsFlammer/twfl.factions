@@ -7,6 +7,8 @@ import com.redecommunity.factions.battle.data.Battle;
 import com.redecommunity.factions.faction.data.Faction;
 import com.redecommunity.factions.faction.enums.Relation;
 import com.redecommunity.factions.faction.manager.FactionManager;
+import com.redecommunity.factions.history.dao.HistoryDAO;
+import com.redecommunity.factions.history.data.History;
 import com.redecommunity.factions.land.dao.LandDAO;
 import com.redecommunity.factions.land.data.Land;
 import com.redecommunity.factions.permission.dao.PermissionDAO;
@@ -164,6 +166,15 @@ public class FactionDAO<F extends Faction> extends Table {
                 );
 
                 faction.getBattles().addAll(battles);
+
+                HistoryDAO historyDAO = new HistoryDAO();
+
+                Set<History> histories = historyDAO.findAll(
+                        "faction_id",
+                        faction.getId()
+                );
+
+                faction.getHistory().addAll(histories);
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
