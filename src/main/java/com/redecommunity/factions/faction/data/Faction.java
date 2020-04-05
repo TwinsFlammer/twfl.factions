@@ -237,7 +237,7 @@ public class Faction {
                 .collect(Collectors.toList());
     }
 
-    public HashMap<EntityType, Integer> getSpawners() {
+    public HashMap<EntityType, Integer> loadSpawners() {
         HashMap<EntityType, Integer> spawners = Maps.newHashMap();
 
         this.lands.forEach(land -> {
@@ -369,6 +369,14 @@ public class Faction {
 
     public Integer getDeaths() {
         return this.getDeathsCivilian() + this.getDeathsNeutral() + this.getDeathsEnemy();
+    }
+
+    public Integer getSpawners() {
+        return 0;
+    }
+
+    public Integer getSpawners(Land land) {
+        return 0;
     }
 
     public double getKDR() {
