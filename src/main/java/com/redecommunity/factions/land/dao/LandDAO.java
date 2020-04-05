@@ -3,6 +3,7 @@ package com.redecommunity.factions.land.dao;
 import com.google.common.collect.Sets;
 import com.redecommunity.common.shared.databases.mysql.dao.Table;
 import com.redecommunity.factions.Factions;
+import com.redecommunity.factions.faction.data.Faction;
 import com.redecommunity.factions.land.data.Land;
 
 import java.sql.Connection;
@@ -15,7 +16,7 @@ import java.util.Set;
 /**
  * Created by @SrGutyerrez
  */
-public class LandDAO<L extends Land> extends Table {
+public class LandDAO<L extends Land, F extends Faction> extends Table {
     @Override
     public void createTable() {
         this.execute(
@@ -46,7 +47,7 @@ public class LandDAO<L extends Land> extends Table {
         return "server_faction_land";
     }
 
-    public L insert(L land) {
+    public L insert(L land, F faction) {
         String query = String.format(
                 "INSERT INTO %s " +
                         "(" +
@@ -69,7 +70,7 @@ public class LandDAO<L extends Land> extends Table {
                         "%d" +
                         ")",
                 this.getTableName(),
-                land.getFactionId(),
+                faction.getId(),
                 land.getWorldName(),
                 land.getX(),
                 land.getZ(),
@@ -87,7 +88,17 @@ public class LandDAO<L extends Land> extends Table {
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
 
             if (resultSet.next())
-                return (L) Land.toLand(resultSet);
+                return (L) new Land(
+                        resultSet.getInt("id"),
+                        land.getFactionId(),
+                        land.getWorldName(),
+                        land.getX(),
+                        land.getZ(),
+                        land.getDuration(),
+                        land.getClaimedAt(),
+                        null,
+                        land.isTemporary()
+                );
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
