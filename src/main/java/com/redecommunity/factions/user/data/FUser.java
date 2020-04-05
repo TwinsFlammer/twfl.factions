@@ -7,11 +7,13 @@ import com.redecommunity.api.spigot.user.data.SpigotUser;
 import com.redecommunity.common.shared.permissions.user.data.User;
 import com.redecommunity.common.shared.skin.data.Skin;
 import com.redecommunity.common.shared.util.Helper;
+import com.redecommunity.common.shared.util.TimeFormatter;
 import com.redecommunity.factions.Factions;
 import com.redecommunity.factions.faction.data.Faction;
 import com.redecommunity.factions.faction.enums.ResignReason;
 import com.redecommunity.factions.faction.enums.Role;
 import com.redecommunity.factions.faction.manager.FactionManager;
+import com.redecommunity.factions.land.dao.LandDAO;
 import com.redecommunity.factions.land.data.Land;
 import com.redecommunity.factions.permission.dao.PermissionDAO;
 import com.redecommunity.factions.permission.data.Permission;
@@ -259,6 +261,52 @@ public class FUser extends SpigotUser {
 
     public Boolean tryClaim(Faction faction, Chunk chunk) {
         Land land = Factions.getLandFactory().getLand(chunk);
+
+        Faction factionLand = land.getFaction();
+
+        if (factionLand != null && factionLand.isDefault()) {
+            this.sendMessage("§cVocê não pode dominar " + factionLand.getName() + ".");
+            return false;
+        }
+
+        if (factionLand != null && !factionLand.isDefault()) {
+            if (factionLand.getId().equals(this.factionId)) {
+                this.sendMessage("§cEsta terra já está dominada por sua facção!");
+                return false;
+            }
+
+            if (factionLand.getLands().size() + factionLand.getProtectedLands().size() > factionLand.getPower()) {
+                if (factionLand.getSpawners(land) >= 3 ) {
+                    this.sendMessage(
+                            String.format(
+                                    "Ops! A facção %s ainda possui muitos geradores nesta terra.",
+                                    factionLand.getName()
+                            )
+                    );
+                }
+
+                this.sendMessage("§eOh yeah! Terra tomada com sucesso!");
+
+                LandDAO landDAO = new LandDAO();
+
+                landDAO.delete(
+                        "id",
+                        factionLand.getId()
+                );
+
+                factionLand.getLands().removeIf(land1 -> land1.getId().equals(land.getId()));
+                return false;
+            } else {
+                this.sendMessage(
+                        String.format(
+                                "§cOps! A facção %s possui poder suficiente para manter esta %s.",
+                                factionLand.getName(),
+                                land.isTemporary() ? "proteção. A proteção acaba em " + TimeFormatter.formatMinimized(land.getDuration()) : "terra"
+                        )
+                );
+                return false;
+            }
+        }
 
         if (faction.getPower() <= faction.getLands().size() + 1) {
             this.sendMessage("§cSua facção não tem poder suficiente para dominar esta terra.");
