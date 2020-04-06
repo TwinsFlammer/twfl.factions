@@ -389,4 +389,8 @@ public class FUser extends SpigotUser {
     public Boolean hasFaction() {
         return !(this.factionId.equals(Factions.ID_NONE) && this.factionId.equals(Factions.ID_SAFEZONE) && this.factionId.equals(Factions.ID_WARZONE));
     }
+
+    public Boolean isInMyFaction(FUser fUser) {
+        return this.factionId.equals(fUser.getFactionId());
+    }
 }
