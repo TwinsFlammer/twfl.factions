@@ -51,4 +51,22 @@ public enum Role {
 
     @Getter
     private final String name, displayName, prefix;
+
+    public Role getNext() {
+        switch (this) {
+            case ALLY:
+            case ENEMY:
+            case NONE:
+            case NEUTRAL:
+            case LEADER:
+            case OFFICER:
+                return null;
+            case MEMBER:
+                return OFFICER;
+            case RECRUIT:
+                return MEMBER;
+        }
+
+        return null;
+    }
 }
