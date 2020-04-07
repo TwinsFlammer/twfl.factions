@@ -107,7 +107,7 @@ public class FUser extends SpigotUser {
     }
 
     private void resign() {
-        this.factionId = 1;
+        this.factionId = Factions.ID_NONE;
         this.role = Role.RECRUIT;
 
         FUserDAO fUserDAO = new FUserDAO();
