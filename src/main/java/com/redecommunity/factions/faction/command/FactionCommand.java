@@ -4,6 +4,7 @@ import com.redecommunity.api.spigot.commands.CustomCommand;
 import com.redecommunity.api.spigot.commands.enums.CommandRestriction;
 import com.redecommunity.common.shared.permissions.group.GroupNames;
 import com.redecommunity.common.shared.permissions.user.data.User;
+import com.redecommunity.factions.faction.command.argument.*;
 import com.redecommunity.factions.faction.data.Faction;
 import com.redecommunity.factions.faction.manager.FactionManager;
 import com.redecommunity.factions.user.data.FUser;
@@ -19,6 +20,17 @@ public class FactionCommand extends CustomCommand {
                 "f",
                 CommandRestriction.IN_GAME,
                 GroupNames.DEFAULT
+        );
+
+        this.addArgument(
+                new FactionAdminCommand(),
+                new FactionClaimCommand(),
+                new FactionCreateCommand(),
+                new FactionDemoteCommand(),
+                new FactionDisbandCommand(),
+                new FactionFlyCommand(),
+                new FactionHelpCommand(),
+                new FactionInviteCommand()
         );
     }
 
