@@ -3,7 +3,10 @@ package com.redecommunity.factions.util;
 public class Messages {
     public static final String FACTION_NEEDED = "§cVocê não está em uma facção.";
     public static final String USER_NOT_EXISTS = "§cEste usuário não existe";
+    public static final String FACTION_NOT_EXISTS = "§cEsta facção não existe";
     public static final String INST_IN_YOUR_FACTION = "§cEste usuário não pertence a sua facção.";
+    public static final String ROLE_NEEDED_TO_EXECUTE_THIS_COMMAND = "§cÉ necessário o cargo %s ou superior para executar este comando.";
+    public static final String PERMISSION_NEEDED_TO_EXECUTE_THIS_COMMAND = "§cÉ necessário a permissão %s para executar este comando.";
     public static final String[] DEFAULT_HELP_MESSAGE_WITHOUT_FACTION = {
             "",
             "§2Comandos disponíveis:",
