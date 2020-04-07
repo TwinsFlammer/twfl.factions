@@ -42,6 +42,8 @@ public class FactionClaimCommand extends AbstractFactionArgumentCommand {
             Land land1 = landDAO.insert(land, faction);
 
             faction.getLands().add(land1);
+
+            commandSender.sendMessage("§aVocê dominou esta terra com sucesso!");
         }
     }
 }
