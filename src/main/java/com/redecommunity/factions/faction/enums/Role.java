@@ -54,19 +54,34 @@ public enum Role {
 
     public Role getNext() {
         switch (this) {
-            case ALLY:
-            case ENEMY:
-            case NONE:
-            case NEUTRAL:
-            case LEADER:
-            case OFFICER:
-                return null;
             case MEMBER:
                 return OFFICER;
             case RECRUIT:
                 return MEMBER;
+            default:
+                return this;
         }
+    }
 
-        return null;
+    public Role getPrevious() {
+        switch (this) {
+            case OFFICER:
+                return MEMBER;
+            case MEMBER:
+                return RECRUIT;
+            default:
+                return null;
+        }
+    }
+
+    public Boolean isHigherThan(Role role) {
+        switch (role) {
+            case MEMBER:
+                return this == RECRUIT;
+            case RECRUIT:
+                return this == MEMBER;
+            default:
+                return true;
+        }
     }
 }
