@@ -490,4 +490,10 @@ public class Faction {
     public Boolean hasAnyPermission() {
         return !this.permissions.isEmpty();
     }
+
+    public Boolean hasInvited(FUser fUser) {
+        return fUser.getInvites()
+                .stream()
+                .anyMatch(faction -> faction.getId().equals(this.id));
+    }
 }
