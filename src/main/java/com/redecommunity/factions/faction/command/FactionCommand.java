@@ -30,7 +30,27 @@ public class FactionCommand extends CustomCommand {
                 new FactionDisbandCommand(),
                 new FactionFlyCommand(),
                 new FactionHelpCommand(),
-                new FactionInviteCommand()
+                new FactionInviteCommand(),
+                new FactionInvitesCommand(),
+                new FactionJoinCommand(),
+                new FactionKickCommand(),
+                new FactionLeaveCommand(),
+                new FactionListCommand(),
+                new FactionMapCommand(),
+                new FactionMembersCommand(),
+                new FactionPermissionsCommand(),
+                new FactionPowerCommand(),
+                new FactionProfileCommand(),
+                new FactionPromoteCommand(),
+                new FactionProtectCommand(),
+                new FactionRankCommand(),
+                new FactionRelationCommand(),
+                new FactionRelationsCommand(),
+                new FactionRemoveHomeCommand(),
+                new FactionSeeChunkCommand(),
+                new FactionSetHome(),
+                new FactionTransferCommand(),
+                new FactionUnClaimCommand()
         );
     }
 
