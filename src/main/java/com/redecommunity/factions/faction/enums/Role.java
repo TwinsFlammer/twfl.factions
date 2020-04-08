@@ -59,7 +59,7 @@ public enum Role {
             case RECRUIT:
                 return MEMBER;
             default:
-                return this;
+                return null;
         }
     }
 
