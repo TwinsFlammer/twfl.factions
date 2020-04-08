@@ -1,4 +1,4 @@
-package com.redecommunity.factions.faction.command.argument;
+package com.redecommunity.factions.faction.command.arguments;
 
 import com.redecommunity.factions.faction.enums.Role;
 import com.redecommunity.factions.user.data.FUser;
