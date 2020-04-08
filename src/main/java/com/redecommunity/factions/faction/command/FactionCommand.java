@@ -4,7 +4,7 @@ import com.redecommunity.api.spigot.commands.CustomCommand;
 import com.redecommunity.api.spigot.commands.enums.CommandRestriction;
 import com.redecommunity.common.shared.permissions.group.GroupNames;
 import com.redecommunity.common.shared.permissions.user.data.User;
-import com.redecommunity.factions.faction.command.argument.*;
+import com.redecommunity.factions.faction.command.arguments.*;
 import com.redecommunity.factions.faction.data.Faction;
 import com.redecommunity.factions.faction.manager.FactionManager;
 import com.redecommunity.factions.user.data.FUser;
