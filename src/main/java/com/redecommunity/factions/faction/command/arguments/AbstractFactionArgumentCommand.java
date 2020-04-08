@@ -60,7 +60,7 @@ public abstract class AbstractFactionArgumentCommand extends CustomArgumentComma
 
         FUser fUser = Factions.getFUserFactory().getUser(user.getId());
 
-        if (this.permissionType != null && !fUser.hasPermission(this.permissionType)) {
+        if (this.permissionType != null && !fUser.hasPermission(this.permissionType) && !fUser.isOverriding()) {
             commandSender.sendMessage("§cVocê não possui permisssão para executar este comando.");
             return;
         }
