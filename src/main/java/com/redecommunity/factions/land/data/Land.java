@@ -34,7 +34,10 @@ public class Land {
     @Getter
     private final Integer x, z;
     @Getter
-    private final Long claimedAt, duration;
+    private final Long claimedAt;
+
+    @Getter
+    private Long duration;
 
     @Getter
     @Setter
@@ -42,6 +45,13 @@ public class Land {
 
     @Setter
     private Boolean temporary;
+
+    public Land asTemporary() {
+        this.temporary = true;
+        this.duration = System.currentTimeMillis() + Land.UNDER_ATTACK_MILLIS;
+
+        return this;
+    }
 
     public Boolean isTemporary() {
         return this.temporary;
