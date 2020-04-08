@@ -379,6 +379,10 @@ public class Faction {
         return 0;
     }
 
+    public Integer getLandCount() {
+        return this.lands.size() + this.protectedLands.size();
+    }
+
     public double getKDR() {
         int kills = this.getKills();
         int deaths = this.getDeaths() == 0 ? 1 : this.getDeaths();
