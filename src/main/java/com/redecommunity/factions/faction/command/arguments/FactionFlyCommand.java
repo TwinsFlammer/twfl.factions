@@ -1,4 +1,4 @@
-package com.redecommunity.factions.faction.command.argument;
+package com.redecommunity.factions.faction.command.arguments;
 
 import com.google.common.collect.Maps;
 import com.redecommunity.common.shared.permissions.group.GroupNames;
