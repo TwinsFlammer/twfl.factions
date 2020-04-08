@@ -8,9 +8,7 @@ import com.redecommunity.factions.permission.enums.PermissionType;
 import com.redecommunity.factions.user.data.FUser;
 import com.redecommunity.factions.util.Messages;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class FactionClaimCommand extends AbstractFactionArgumentCommand {
     public FactionClaimCommand() {
@@ -24,17 +22,27 @@ public class FactionClaimCommand extends AbstractFactionArgumentCommand {
     @Override
     public void onCommand(CommandSender commandSender, FUser fUser, String[] args) {
         if (!fUser.hasFaction()) {
-            commandSender.sendMessage(Messages.FACTION_NEEDED);
+            commandSender.sendMessage(
+                    Messages.FACTION_NEEDED
+            );
+            return;
+        }
+
+        if (!fUser.hasPermission(PermissionType.UNCLAIM) && !fUser.isOverriding()) {
+            commandSender.sendMessage(
+                    String.format(
+                            Messages.PERMISSION_NEEDED_TO_EXECUTE_THIS_COMMAND,
+                            PermissionType.UNCLAIM.getName()
+                    )
+            );
             return;
         }
 
         Faction faction = fUser.getFaction();
 
-        Player player = fUser.getPlayer();
-        Location location = player.getLocation();
-        Chunk chunk = location.getChunk();
+        Chunk chunk = fUser.getChunk();
 
-        if (fUser.tryClaim(fUser.getFaction(), chunk)) {
+        if (fUser.tryClaim(faction, chunk)) {
             Land land = Factions.getLandFactory().getLand(chunk);
 
             LandDAO landDAO = new LandDAO();
