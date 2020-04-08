@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.Location;
 import org.bukkit.Warning;
 
 import java.text.DecimalFormat;
@@ -172,6 +173,22 @@ public class FUser extends SpigotUser {
                         "§fÚltimo login: §7" + this.getLastLoginFormatted()
                 )
                 .hideAttributes();
+    }
+
+    public Role getPreviousRole() {
+        return this.role.getPrevious();
+    }
+
+    public Role getNextRole() {
+        return this.role.getNext();
+    }
+
+    public Location getLocation() {
+        return this.getPlayer().getLocation();
+    }
+
+    public Chunk getChunk() {
+        return this.getLocation().getChunk();
     }
 
     public String getFactionName() {
