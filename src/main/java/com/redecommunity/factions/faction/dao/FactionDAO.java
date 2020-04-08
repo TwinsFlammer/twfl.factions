@@ -1,6 +1,7 @@
 package com.redecommunity.factions.faction.dao;
 
 import com.google.common.collect.Sets;
+import com.redecommunity.api.spigot.util.serialize.LocationSerialize;
 import com.redecommunity.common.shared.databases.mysql.dao.Table;
 import com.redecommunity.factions.battle.dao.BattleDAO;
 import com.redecommunity.factions.battle.data.Battle;
@@ -14,6 +15,7 @@ import com.redecommunity.factions.land.data.Land;
 import com.redecommunity.factions.permission.dao.PermissionDAO;
 import com.redecommunity.factions.permission.data.Permission;
 import com.redecommunity.factions.user.dao.FUserDAO;
+import org.bukkit.Location;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,6 +38,7 @@ public class FactionDAO<F extends Faction> extends Table {
                                 "`id` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT," +
                                 "`tag` VARCHAR(20) NOT NULL," +
                                 "`name` VARCHAR(3) NOT NULL," +
+                                "`home` VARCHAR(255)," +
                                 "`war_wins` INTEGER NOT NULL" +
                                 ");",
                         this.getTableName()
@@ -59,6 +62,7 @@ public class FactionDAO<F extends Faction> extends Table {
                         "(" +
                         "`tag`," +
                         "`name`," +
+                        "`home`," +
                         "`war_wins`" +
                         ")" +
                         " VALUES " +
@@ -68,6 +72,7 @@ public class FactionDAO<F extends Faction> extends Table {
                 this.getTableName(),
                 faction.getTag(),
                 faction.getName(),
+                faction.getHomeLocation(),
                 faction.getWarWins()
         );
 
@@ -110,6 +115,14 @@ public class FactionDAO<F extends Faction> extends Table {
         ) {
             while (resultSet.next()) {
                 Faction faction = FactionManager.toFaction(resultSet);
+
+                String serializedHomeLocation = resultSet.getString("home");
+
+                if (serializedHomeLocation != null) {
+                    Location homeLocation = LocationSerialize.toLocation(serializedHomeLocation);
+
+                    faction.setHomeLocation(homeLocation);
+                }
 
                 FUserDAO fUserDAO = new FUserDAO();
 
