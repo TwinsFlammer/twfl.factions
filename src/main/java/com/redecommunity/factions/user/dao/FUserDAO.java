@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * Created by @SrGutyerrez
  */
-public class FUserDAO<U extends FUser> extends Table {
+public class FUserDAO extends Table {
     @Override
     public void createTable() {
         this.execute(
@@ -57,7 +57,7 @@ public class FUserDAO<U extends FUser> extends Table {
         return "server_faction_user";
     }
 
-    public void insert(U fUser) {
+    public <U extends FUser> void insert(U fUser) {
         String query = String.format(
                 "INSERT INTO %s " +
                         "(" +
@@ -155,7 +155,7 @@ public class FUserDAO<U extends FUser> extends Table {
         }
     }
 
-    public <K, V> Set<U> findAll(K key, V value) {
+    public <K, V, U> Set<U> findAll(K key, V value) {
         String query = String.format(
                 "SELECT * FROM %s WHERE `%s`=%d",
                 this.getTableName(),
