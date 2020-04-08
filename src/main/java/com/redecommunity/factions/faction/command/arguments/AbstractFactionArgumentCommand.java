@@ -1,4 +1,4 @@
-package com.redecommunity.factions.faction.command.argument;
+package com.redecommunity.factions.faction.command.arguments;
 
 import com.redecommunity.api.spigot.commands.CustomArgumentCommand;
 import com.redecommunity.common.shared.language.enums.Language;
