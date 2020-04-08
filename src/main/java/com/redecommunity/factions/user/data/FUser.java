@@ -223,7 +223,17 @@ public class FUser extends SpigotUser {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-        return simpleDateFormat.format(date);
+        String formatted = simpleDateFormat.format(date);
+
+        return formatted.split(" ")[0] + " às " + formatted.split(" ")[1];
+    }
+
+    public String getRolePrefix() {
+        return this.role.getPrefix();
+    }
+
+    public String getRoleName() {
+        return this.role.getName();
     }
 
     public double getKDR() {
