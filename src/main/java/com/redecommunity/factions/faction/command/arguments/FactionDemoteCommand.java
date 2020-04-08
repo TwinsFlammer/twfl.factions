@@ -1,10 +1,14 @@
 package com.redecommunity.factions.faction.command.arguments;
 
+import com.google.common.collect.Maps;
 import com.redecommunity.factions.faction.enums.Role;
+import com.redecommunity.factions.user.dao.FUserDAO;
 import com.redecommunity.factions.user.data.FUser;
 import com.redecommunity.factions.user.manager.FUserManager;
 import com.redecommunity.factions.util.Messages;
 import org.bukkit.command.CommandSender;
+
+import java.util.HashMap;
 
 public class FactionDemoteCommand extends AbstractFactionArgumentCommand {
     public FactionDemoteCommand() {
@@ -42,12 +46,26 @@ public class FactionDemoteCommand extends AbstractFactionArgumentCommand {
                     return;
                 }
 
-                Role previousRole = fUser1.getRole().getPrevious();
+                Role previousRole = fUser1.getPreviousRole();
 
                 if (previousRole == null) {
                     commandSender.sendMessage("§cNão há mais cargos para serem rebaixados.");
                     return;
                 }
+
+                fUser1.setRole(previousRole);
+
+                FUserDAO fUserDAO = new FUserDAO();
+
+                HashMap<String, Object> keys = Maps.newHashMap();
+
+                keys.put("role", fUser1.getRole().toString());
+
+                fUserDAO.update(
+                        keys,
+                        "user_id",
+                        fUser1.getId()
+                );
 
                 commandSender.sendMessage(
                         String.format(
